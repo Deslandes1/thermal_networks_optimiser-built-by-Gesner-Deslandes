@@ -13,7 +13,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ========== CUSTOM CSS FOR MODERN LOOK ==========
+# ========== CUSTOM CSS ==========
 st.markdown("""
 <style>
     /* Main app background after login */
@@ -105,12 +105,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ========== LOGIN PAGE – ATTRACTIVE ANIMATED GRADIENT ==========
+# ========== LOGIN PAGE – ANIMATED GRADIENT, DARK YELLOW & BLACK TEXT ==========
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    # Full‑screen animated gradient background (blue → purple → pink)
     st.markdown("""
     <style>
         @keyframes gradientShift {
@@ -142,33 +141,21 @@ if not st.session_state.authenticated:
             transform: translateY(-8px);
             box-shadow: 0 30px 55px rgba(0,0,0,0.4), 0 0 0 3px rgba(255,255,255,0.4);
         }
-        .floating-particle {
-            position: fixed;
-            width: 6px;
-            height: 6px;
-            background: rgba(255,255,255,0.6);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
-        }
     </style>
     <div class="animated-bg"></div>
-    <!-- Simple floating particles effect via CSS only (small dots) -->
     """, unsafe_allow_html=True)
     
-    # Centered login card
     col1, col2, col3 = st.columns([1, 1.8, 1])
     with col2:
         st.markdown("""
         <div class="glow-card">
             <div style="font-size: 5rem; margin-bottom: 0.5rem;">🔥⚙️</div>
-            <h1 style="color: white; margin: 0.2rem 0; font-size: 2.2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Thermal Networks<br>Optimisation Suite</h1>
-            <p style="color: #f0f0f0; font-size: 1.2rem; margin: 0.2rem 0;">built by <strong style="color: #ffdd99;">Gesner Deslandes</strong></p>
-            <p style="color: #e0e0e0; margin-top: 0.5rem; font-size: 0.9rem;">🔐 Demo access – any username / any password</p>
+            <h1 style="color: #DAA520; margin: 0.2rem 0; font-size: 2.2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Thermal Networks<br>Optimisation Suite</h1>
+            <p style="color: #111111; font-size: 1.2rem; margin: 0.2rem 0; font-weight: 500;">built by <strong style="color: #000000;">Gesner Deslandes</strong></p>
+            <p style="color: #111111; margin-top: 0.5rem; font-size: 0.9rem; font-weight: 500;">🔐 Demo access – any username / any password</p>
         </div>
         """, unsafe_allow_html=True)
         
-        # Streamlit login widgets (they will inherit the styling)
         username = st.text_input("", placeholder="👤 Any username", label_visibility="collapsed")
         password = st.text_input("", type="password", placeholder="🔒 Any password", label_visibility="collapsed")
         if st.button("🚀 Enter Dashboard", use_container_width=True):
@@ -177,7 +164,7 @@ if not st.session_state.authenticated:
                 st.rerun()
             else:
                 st.error("Please enter a username and password (any values work)")
-        st.markdown("<p style='text-align: center; color: #ddd; font-size: 0.7rem; margin-top: 1rem;'>© 2026 – Advanced Thermal Optimisation</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #ccc; font-size: 0.7rem; margin-top: 1rem;'>© 2026 – Advanced Thermal Optimisation</p>", unsafe_allow_html=True)
     st.stop()
 
 # ========== MAIN DASHBOARD (AFTER LOGIN) ==========
