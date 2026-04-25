@@ -13,18 +13,18 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ========== CUSTOM CSS FOR BEAUTIFUL BACKGROUNDS & BLACK TEXT ==========
+# ========== CUSTOM CSS ==========
 st.markdown("""
 <style>
-    /* Main app background */
+    /* Main app background after login */
     .stApp {
         background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
     }
     
-    /* Make input placeholders black for visibility */
+    /* Make input placeholders black for readability */
     input::placeholder {
         color: black !important;
-        opacity: 0.8;
+        opacity: 0.9 !important;
     }
     
     /* Sidebar styling */
@@ -76,6 +76,12 @@ st.markdown("""
         margin-top: 2rem;
         font-size: 0.8rem;
     }
+    
+    /* Override Streamlit's default text color on login page only – keep black text */
+    .stTextInput > div > div > input {
+        color: black !important;
+        background-color: rgba(255,255,255,0.9) !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -84,7 +90,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    # Force a full‑width colorful background behind the login card
+    # Full‑screen colorful gradient background (purple to blue)
     st.markdown("""
     <div style="
         position: fixed;
@@ -97,12 +103,13 @@ if not st.session_state.authenticated:
     "></div>
     """, unsafe_allow_html=True)
     
+    # Centered login card
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown("""
         <div style="
-            background: rgba(255,255,255,0.25);
-            backdrop-filter: blur(15px);
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(12px);
             border-radius: 30px;
             padding: 2rem;
             text-align: center;
@@ -110,13 +117,13 @@ if not st.session_state.authenticated:
             border: 1px solid rgba(255,255,255,0.3);
         ">
             <div style="font-size: 4rem;">🔥</div>
-            <h1 style="color: black; margin: 0.5rem 0; text-shadow: none;">Thermal Networks Optimisation Suite</h1>
-            <h3 style="color: black;">built by <strong>Gesner Deslandes</strong></h3>
-            <p style="color: black; margin-top: 1rem;">Demo – any credentials work</p>
+            <h1 style="color: black; margin: 0.5rem 0; text-shadow: none; font-weight: 700;">Thermal Networks Optimisation Suite</h1>
+            <h3 style="color: black; margin: 0; font-weight: 600;">built by <strong>Gesner Deslandes</strong></h3>
+            <p style="color: black; margin-top: 1rem; font-size: 1rem;">Demo – any credentials work</p>
         </div>
         """, unsafe_allow_html=True)
         
-        # Streamlit input widgets (placeholders appear gray but readable)
+        # Streamlit login widgets
         username = st.text_input("Username", placeholder="Any username", label_visibility="collapsed")
         password = st.text_input("Password", type="password", placeholder="Any password", label_visibility="collapsed")
         if st.button("🔓 Login", use_container_width=True):
@@ -226,7 +233,6 @@ with tab2:
     fig_cop.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig_cop, use_container_width=True)
     
-    # Load profile
     cooling_load = df["chw_flow_rate"] * df["chw_delta"] * 4.18 / 3600
     fig_load = px.area(x=df["timestamp"], y=cooling_load, title="Instantaneous Cooling Load (kW)", labels={"x": "Time", "y": "kW"})
     fig_load.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
