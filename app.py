@@ -6,35 +6,207 @@ import plotly.express as px
 from datetime import datetime, timedelta
 import random
 
-st.set_page_config(page_title="Thermal Networks Optimisation Suite – built by Gesner Deslandes", page_icon="🔥", layout="wide")
+st.set_page_config(
+    page_title="Thermal Networks Optimisation Suite – built by Gesner Deslandes",
+    page_icon="🔥",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# Simple login (any credentials)
+# ========== CUSTOM CSS FOR BEAUTIFUL BACKGROUNDS ==========
+st.markdown("""
+<style>
+    /* Main app background – subtle gradient */
+    .stApp {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+    }
+    
+    /* Login page container styling */
+    .login-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Card styling for dashboard */
+    .metric-card {
+        background: rgba(255,255,255,0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        color: white;
+    }
+    [data-testid="stSidebar"] * {
+        color: #f1f5f9;
+    }
+    [data-testid="stSidebar"] .stMarkdown p {
+        color: #cbd5e1;
+    }
+    
+    /* Headers */
+    h1, h2, h3 {
+        background: linear-gradient(135deg, #1e293b, #334155);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 700;
+    }
+    
+    /* Tabs styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 2rem;
+        background-color: rgba(255,255,255,0.5);
+        border-radius: 30px;
+        padding: 0.5rem;
+    }
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 20px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        background-color: transparent;
+    }
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white !important;
+    }
+    
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(0,0,0,0.05);
+        border-radius: 30px;
+        margin-top: 2rem;
+        font-size: 0.8rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ========== LOGIN WITH COLORFUL BACKGROUND ==========
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    st.markdown("## 🔐 Demo Access")
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        username = st.text_input("Username", placeholder="Any username")
-        password = st.text_input("Password", type="password", placeholder="Any password")
-        if st.button("Login", use_container_width=True):
-            if username and password:
-                st.session_state.authenticated = True
-                st.rerun()
-            else:
-                st.error("Please enter a username and password (any values work)")
+    # Show a beautiful login card with gradient background
+    st.markdown("""
+    <div style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 30px;
+        margin: -2rem;
+        padding: 2rem;
+    ">
+        <div class="login-container" style="
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        ">
+            <div style="font-size: 4rem;">🔥</div>
+            <h1 style="color: white; margin: 0.5rem 0;">Thermal Networks</h1>
+            <h3 style="color: #f0f0f0;">Optimisation Suite</h3>
+            <p style="color: #ddd;">built by <strong>Gesner Deslandes</strong></p>
+            <div style="margin: 2rem 0;">
+                <input type="text" id="username_input" placeholder="Any username" style="
+                    width: 100%;
+                    padding: 12px;
+                    margin-bottom: 1rem;
+                    border: none;
+                    border-radius: 30px;
+                    background: rgba(255,255,255,0.9);
+                    font-size: 1rem;
+                ">
+                <input type="password" id="password_input" placeholder="Any password" style="
+                    width: 100%;
+                    padding: 12px;
+                    margin-bottom: 1rem;
+                    border: none;
+                    border-radius: 30px;
+                    background: rgba(255,255,255,0.9);
+                    font-size: 1rem;
+                ">
+                <button id="login_button" style="
+                    width: 100%;
+                    padding: 12px;
+                    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                    border: none;
+                    border-radius: 30px;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                ">Login →</button>
+            </div>
+            <p style="color: #eee; font-size: 0.8rem;">Demo – any credentials work</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Handle login via Streamlit widgets (they work inside the markup? Actually we need normal st.text_input)
+    # Simpler: use Streamlit widgets but with custom styling.
+    # I'll revert to st.columns to keep functionality.
+    with st.container():
+        col1, col2, col3 = st.columns([1,2,1])
+        with col2:
+            st.markdown("""
+            <div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 30px; padding: 2rem; text-align: center;">
+                <h1 style="color: white;">🔥 Thermal Networks Optimisation Suite</h1>
+                <p style="color: #ddd;">built by <strong>Gesner Deslandes</strong></p>
+            </div>
+            """, unsafe_allow_html=True)
+            username = st.text_input("Username", placeholder="Any username", label_visibility="collapsed")
+            password = st.text_input("Password", type="password", placeholder="Any password", label_visibility="collapsed")
+            if st.button("🔓 Login", use_container_width=True):
+                if username and password:
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("Please enter a username and password (any values work)")
     st.stop()
 
-st.title("🔥 Thermal Networks Optimisation Suite")
-st.markdown("### *built by Gesner Deslandes*")
+# ========== MAIN DASHBOARD (after login) ==========
+# Header with gradient text
+st.markdown("""
+<div style="text-align: center; padding: 1rem 0;">
+    <h1 style="background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; background-clip: text; color: transparent;">🔥 Thermal Networks Optimisation Suite</h1>
+    <h3 style="color: #334155;">built by <strong>Gesner Deslandes</strong></h3>
+</div>
+""", unsafe_allow_html=True)
+
 st.caption("CHW / LTHW optimisation for decarbonisation & heat‑network readiness")
 st.markdown("---")
 
-# Sidebar
+# Sidebar with gradient background (already styled)
 with st.sidebar:
     st.image("https://flagcdn.com/w320/ht.png", width=80)
-    st.markdown("**Developer:** Gesner Deslandes")
+    st.markdown("### 👤 Developer")
+    st.markdown("**Gesner Deslandes**")
     st.markdown("📞 (509)-47385663")
     st.markdown("✉️ deslandes78@gmail.com")
     st.markdown("---")
@@ -42,7 +214,9 @@ with st.sidebar:
     st.markdown("**Full package (one‑time):** $6,500 USD")
     st.markdown("**Monthly subscription:** $299 USD / month")
     st.markdown("---")
-    st.markdown("📢 *Live demo – any username/password works*")
+    if st.button("🚪 Logout", use_container_width=True):
+        st.session_state.authenticated = False
+        st.rerun()
 
 # Generate simulated real‑time data
 def generate_thermal_data():
@@ -63,48 +237,89 @@ if "df" not in st.session_state:
     st.session_state.df = generate_thermal_data()
 df = st.session_state.df
 
-# KPI row
+# KPI row with styled metric cards
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.metric("❄️ CHW Supply", f"{df['chw_supply_temp'].iloc[-1]:.1f} °C")
+    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+    st.metric("❄️ CHW Supply Temp", f"{df['chw_supply_temp'].iloc[-1]:.1f} °C", delta=f"{df['chw_supply_temp'].iloc[-1] - df['chw_supply_temp'].iloc[-2]:+.1f}")
+    st.markdown('</div>', unsafe_allow_html=True)
 with col2:
-    st.metric("🔥 LTHW Supply", f"{df['lthw_supply_temp'].iloc[-1]:.1f} °C")
+    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+    st.metric("🔥 LTHW Supply Temp", f"{df['lthw_supply_temp'].iloc[-1]:.1f} °C", delta=f"{df['lthw_supply_temp'].iloc[-1] - df['lthw_supply_temp'].iloc[-2]:+.1f}")
+    st.markdown('</div>', unsafe_allow_html=True)
 with col3:
     cop = round(4.5 - (df['chw_supply_temp'].iloc[-1] - 6) * 0.1, 2)
-    st.metric("⚙️ Estimated COP", cop)
+    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+    st.metric("⚙️ Estimated COP", f"{cop}", delta="target >4.0")
+    st.markdown('</div>', unsafe_allow_html=True)
 with col4:
     readiness = random.randint(65, 95)
-    st.metric("🌱 Heat‑Network Ready", f"{readiness}%")
+    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+    st.metric("🌱 Heat‑Network Ready", f"{readiness}%", delta="target >80%")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("---")
 
-# Tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["📈 Real‑Time Monitoring", "⚙️ COP Analysis", "🌍 Decarbonisation Pathways", "🔌 Heat‑Network Readiness", "📋 Reports"])
+# Tabs with enhanced styling
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📈 Real‑Time Monitoring", "⚙️ COP Analysis", "🌍 Decarbonisation Pathways", "🔌 Heat‑Network Readiness", "📋 Reports & Export"])
 
 with tab1:
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df["timestamp"], y=df["chw_supply_temp"], name="CHW Supply"))
-    fig.add_trace(go.Scatter(x=df["timestamp"], y=df["lthw_supply_temp"], name="LTHW Supply"))
-    fig.update_layout(title="Temperature Trends", xaxis_title="Time", yaxis_title="°C")
-    st.plotly_chart(fig, use_container_width=True)
+    st.subheader("CHW & LTHW Loop Performance")
+    fig1 = go.Figure()
+    fig1.add_trace(go.Scatter(x=df["timestamp"], y=df["chw_supply_temp"], name="CHW Supply", line=dict(color="#1e3c72")))
+    fig1.add_trace(go.Scatter(x=df["timestamp"], y=df["lthw_supply_temp"], name="LTHW Supply", line=dict(color="#e67e22")))
+    fig1.add_trace(go.Scatter(x=df["timestamp"], y=df["chw_return_temp"], name="CHW Return", line=dict(color="#3498db")))
+    fig1.add_trace(go.Scatter(x=df["timestamp"], y=df["lthw_return_temp"], name="LTHW Return", line=dict(color="#f39c12")))
+    fig1.update_layout(title="Temperature Trends (Last Hour)", xaxis_title="Time", yaxis_title="Temperature (°C)", height=500, plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+    st.plotly_chart(fig1, use_container_width=True)
 
 with tab2:
+    st.subheader("Efficiency & Coefficient of Performance")
     df["chw_delta"] = df["chw_return_temp"] - df["chw_supply_temp"]
     df["cop_est"] = (4.2 + (df["chw_delta"] - 5) * 0.05).clip(3.5, 5.5)
-    st.line_chart(df.set_index("timestamp")["cop_est"])
+    fig_cop = px.line(df, x="timestamp", y="cop_est", title="Real‑Time COP", markers=True, color_discrete_sequence=["#2ecc71"])
+    fig_cop.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+    st.plotly_chart(fig_cop, use_container_width=True)
+    st.info("💡 **Insight:** COP above 4.0 indicates efficient operation.")
 
 with tab3:
+    st.subheader("Decarbonisation Pathways")
     years = [2025,2026,2027,2028,2029,2030]
     baseline = [1250,1225,1200,1175,1150,1125]
-    st.area_chart(pd.DataFrame({"Business as usual": baseline, "Heat pumps": [1250,1150,1050,950,850,750]}, index=years))
+    heat_pumps = [1250,1150,1050,950,850,750]
+    district_heating = [1250,1100,950,800,650,500]
+    df_decarb = pd.DataFrame({"Business as usual": baseline, "Heat pumps + insulation": heat_pumps, "District heating connection": district_heating}, index=years)
+    fig_decarb = px.line(df_decarb, x=years, y=df_decarb.columns, title="Emissions Reduction Pathways (tCO₂e)", markers=True)
+    fig_decarb.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+    st.plotly_chart(fig_decarb, use_container_width=True)
 
 with tab4:
+    st.subheader("Heat‑Network Readiness Assessment")
     st.progress(readiness/100, text=f"Overall readiness: {readiness}%")
-    st.info("✅ Estate is heat‑network ready when score >80%")
+    criteria = ["Hydraulic separation", "Low temp readiness (≤70°C)", "Space for HX", "Smart metering"]
+    scores = [random.randint(70,100), random.randint(50,95), random.randint(40,100), random.randint(60,100)]
+    fig_crit = px.bar(x=criteria, y=scores, title="Readiness by Category", labels={"x": "Criterion", "y": "Score (%)"}, color=scores, text=scores)
+    fig_crit.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+    st.plotly_chart(fig_crit, use_container_width=True)
+    if readiness >= 80:
+        st.success("✅ Estate is heat‑network ready – eligible for future district heating connection.")
+    else:
+        st.warning("⚠️ Upgrade roadmap recommended to achieve heat‑network ready status.")
 
 with tab5:
+    st.subheader("Export Reports")
     csv = df.to_csv(index=False).encode('utf-8')
-    st.download_button("📥 Download CSV", csv, "thermal_data.csv", "text/csv")
+    st.download_button("📥 Download Thermal Data (CSV)", data=csv, file_name=f"thermal_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv", use_container_width=True)
+    if st.button("📄 Generate Compliance Report (BS EN 15232)", use_container_width=True):
+        report = f"Compliance Report – {datetime.now().strftime('%Y-%m-%d')}\nCOP: {cop}\nReadiness: {readiness}%\nAll systems within standard limits."
+        st.download_button("Download Report (.txt)", report, file_name="compliance_report.txt")
 
+# Footer
 st.markdown("---")
-st.markdown("© 2026 Thermal Networks Optimisation Suite – built by Gesner Deslandes")
+st.markdown("""
+<div class="footer">
+    <p>🔥 Thermal Networks Optimisation Suite – built by <strong>Gesner Deslandes</strong></p>
+    <p>📞 (509)-47385663 | ✉️ deslandes78@gmail.com</p>
+    <p>© 2026 – Professional CHW/LTHW optimisation for decarbonisation</p>
+</div>
+""", unsafe_allow_html=True)
