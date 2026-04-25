@@ -13,39 +13,18 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ========== CUSTOM CSS FOR BEAUTIFUL BACKGROUNDS ==========
+# ========== CUSTOM CSS FOR BEAUTIFUL BACKGROUNDS & BLACK TEXT ==========
 st.markdown("""
 <style>
-    /* Main app background – subtle gradient */
+    /* Main app background */
     .stApp {
         background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
     }
     
-    /* Login page container styling */
-    .login-container {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        animation: fadeIn 0.8s ease-out;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Card styling for dashboard */
-    .metric-card {
-        background: rgba(255,255,255,0.9);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 1rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        transition: transform 0.3s;
-    }
-    .metric-card:hover {
-        transform: translateY(-5px);
+    /* Make input placeholders black for visibility */
+    input::placeholder {
+        color: black !important;
+        opacity: 0.8;
     }
     
     /* Sidebar styling */
@@ -56,17 +35,18 @@ st.markdown("""
     [data-testid="stSidebar"] * {
         color: #f1f5f9;
     }
-    [data-testid="stSidebar"] .stMarkdown p {
-        color: #cbd5e1;
-    }
     
-    /* Headers */
-    h1, h2, h3 {
-        background: linear-gradient(135deg, #1e293b, #334155);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        font-weight: 700;
+    /* Metric cards */
+    .metric-card {
+        background: rgba(255,255,255,0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
     }
     
     /* Tabs styling */
@@ -99,110 +79,65 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ========== LOGIN WITH COLORFUL BACKGROUND ==========
+# ========== LOGIN PAGE (COLORFUL BACKGROUND, BLACK TEXT) ==========
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    # Show a beautiful login card with gradient background
+    # Force a full‑width colorful background behind the login card
     st.markdown("""
     <div style="
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 80vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 30px;
-        margin: -2rem;
-        padding: 2rem;
-    ">
-        <div class="login-container" style="
-            background: rgba(255,255,255,0.15);
+        z-index: -1;
+    "></div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("""
+        <div style="
+            background: rgba(255,255,255,0.25);
             backdrop-filter: blur(15px);
             border-radius: 30px;
             padding: 2rem;
-            width: 100%;
-            max-width: 450px;
             text-align: center;
             box-shadow: 0 25px 45px rgba(0,0,0,0.2);
             border: 1px solid rgba(255,255,255,0.3);
         ">
             <div style="font-size: 4rem;">🔥</div>
-            <h1 style="color: white; margin: 0.5rem 0;">Thermal Networks</h1>
-            <h3 style="color: #f0f0f0;">Optimisation Suite</h3>
-            <p style="color: #ddd;">built by <strong>Gesner Deslandes</strong></p>
-            <div style="margin: 2rem 0;">
-                <input type="text" id="username_input" placeholder="Any username" style="
-                    width: 100%;
-                    padding: 12px;
-                    margin-bottom: 1rem;
-                    border: none;
-                    border-radius: 30px;
-                    background: rgba(255,255,255,0.9);
-                    font-size: 1rem;
-                ">
-                <input type="password" id="password_input" placeholder="Any password" style="
-                    width: 100%;
-                    padding: 12px;
-                    margin-bottom: 1rem;
-                    border: none;
-                    border-radius: 30px;
-                    background: rgba(255,255,255,0.9);
-                    font-size: 1rem;
-                ">
-                <button id="login_button" style="
-                    width: 100%;
-                    padding: 12px;
-                    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-                    border: none;
-                    border-radius: 30px;
-                    color: white;
-                    font-weight: bold;
-                    font-size: 1rem;
-                    cursor: pointer;
-                    transition: transform 0.2s;
-                ">Login →</button>
-            </div>
-            <p style="color: #eee; font-size: 0.8rem;">Demo – any credentials work</p>
+            <h1 style="color: black; margin: 0.5rem 0; text-shadow: none;">Thermal Networks Optimisation Suite</h1>
+            <h3 style="color: black;">built by <strong>Gesner Deslandes</strong></h3>
+            <p style="color: black; margin-top: 1rem;">Demo – any credentials work</p>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Handle login via Streamlit widgets (they work inside the markup? Actually we need normal st.text_input)
-    # Simpler: use Streamlit widgets but with custom styling.
-    # I'll revert to st.columns to keep functionality.
-    with st.container():
-        col1, col2, col3 = st.columns([1,2,1])
-        with col2:
-            st.markdown("""
-            <div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 30px; padding: 2rem; text-align: center;">
-                <h1 style="color: white;">🔥 Thermal Networks Optimisation Suite</h1>
-                <p style="color: #ddd;">built by <strong>Gesner Deslandes</strong></p>
-            </div>
-            """, unsafe_allow_html=True)
-            username = st.text_input("Username", placeholder="Any username", label_visibility="collapsed")
-            password = st.text_input("Password", type="password", placeholder="Any password", label_visibility="collapsed")
-            if st.button("🔓 Login", use_container_width=True):
-                if username and password:
-                    st.session_state.authenticated = True
-                    st.rerun()
-                else:
-                    st.error("Please enter a username and password (any values work)")
+        """, unsafe_allow_html=True)
+        
+        # Streamlit input widgets (placeholders appear gray but readable)
+        username = st.text_input("Username", placeholder="Any username", label_visibility="collapsed")
+        password = st.text_input("Password", type="password", placeholder="Any password", label_visibility="collapsed")
+        if st.button("🔓 Login", use_container_width=True):
+            if username and password:
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("Please enter a username and password (any values work)")
     st.stop()
 
-# ========== MAIN DASHBOARD (after login) ==========
-# Header with gradient text
+# ========== MAIN DASHBOARD (AFTER LOGIN) ==========
 st.markdown("""
 <div style="text-align: center; padding: 1rem 0;">
     <h1 style="background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; background-clip: text; color: transparent;">🔥 Thermal Networks Optimisation Suite</h1>
     <h3 style="color: #334155;">built by <strong>Gesner Deslandes</strong></h3>
 </div>
 """, unsafe_allow_html=True)
-
 st.caption("CHW / LTHW optimisation for decarbonisation & heat‑network readiness")
 st.markdown("---")
 
-# Sidebar with gradient background (already styled)
+# Sidebar
 with st.sidebar:
     st.image("https://flagcdn.com/w320/ht.png", width=80)
     st.markdown("### 👤 Developer")
@@ -237,7 +172,7 @@ if "df" not in st.session_state:
     st.session_state.df = generate_thermal_data()
 df = st.session_state.df
 
-# KPI row with styled metric cards
+# KPI row
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.markdown('<div class="metric-card">', unsafe_allow_html=True)
@@ -260,7 +195,7 @@ with col4:
 
 st.markdown("---")
 
-# Tabs with enhanced styling
+# Tabs
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["📈 Real‑Time Monitoring", "⚙️ COP Analysis", "🌍 Decarbonisation Pathways", "🔌 Heat‑Network Readiness", "📋 Reports & Export"])
 
 with tab1:
@@ -272,6 +207,16 @@ with tab1:
     fig1.add_trace(go.Scatter(x=df["timestamp"], y=df["lthw_return_temp"], name="LTHW Return", line=dict(color="#f39c12")))
     fig1.update_layout(title="Temperature Trends (Last Hour)", xaxis_title="Time", yaxis_title="Temperature (°C)", height=500, plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig1, use_container_width=True)
+    
+    colf1, colf2 = st.columns(2)
+    with colf1:
+        fig_flow = px.line(df, x="timestamp", y="chw_flow_rate", title="CHW Flow Rate (m³/h)", markers=True)
+        fig_flow.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+        st.plotly_chart(fig_flow, use_container_width=True)
+    with colf2:
+        fig_flow_lthw = px.line(df, x="timestamp", y="lthw_flow_rate", title="LTHW Flow Rate (m³/h)", markers=True)
+        fig_flow_lthw.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+        st.plotly_chart(fig_flow_lthw, use_container_width=True)
 
 with tab2:
     st.subheader("Efficiency & Coefficient of Performance")
@@ -280,7 +225,14 @@ with tab2:
     fig_cop = px.line(df, x="timestamp", y="cop_est", title="Real‑Time COP", markers=True, color_discrete_sequence=["#2ecc71"])
     fig_cop.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig_cop, use_container_width=True)
-    st.info("💡 **Insight:** COP above 4.0 indicates efficient operation.")
+    
+    # Load profile
+    cooling_load = df["chw_flow_rate"] * df["chw_delta"] * 4.18 / 3600
+    fig_load = px.area(x=df["timestamp"], y=cooling_load, title="Instantaneous Cooling Load (kW)", labels={"x": "Time", "y": "kW"})
+    fig_load.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+    st.plotly_chart(fig_load, use_container_width=True)
+    
+    st.info("💡 **Insight:** COP above 4.0 indicates efficient operation. Below 3.8 suggests maintenance or load optimisation needed.")
 
 with tab3:
     st.subheader("Decarbonisation Pathways")
@@ -292,6 +244,8 @@ with tab3:
     fig_decarb = px.line(df_decarb, x=years, y=df_decarb.columns, title="Emissions Reduction Pathways (tCO₂e)", markers=True)
     fig_decarb.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig_decarb, use_container_width=True)
+    
+    st.success("**2030 target:** 625 tCO₂e – District heating connection reaches 500 tCO₂e by 2030.")
 
 with tab4:
     st.subheader("Heat‑Network Readiness Assessment")
@@ -307,12 +261,21 @@ with tab4:
         st.warning("⚠️ Upgrade roadmap recommended to achieve heat‑network ready status.")
 
 with tab5:
-    st.subheader("Export Reports")
+    st.subheader("Export Reports & Compliance")
     csv = df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Thermal Data (CSV)", data=csv, file_name=f"thermal_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv", use_container_width=True)
     if st.button("📄 Generate Compliance Report (BS EN 15232)", use_container_width=True):
-        report = f"Compliance Report – {datetime.now().strftime('%Y-%m-%d')}\nCOP: {cop}\nReadiness: {readiness}%\nAll systems within standard limits."
-        st.download_button("Download Report (.txt)", report, file_name="compliance_report.txt")
+        report = f"""
+        **Commissioning & Compliance Report** – {datetime.now().strftime("%Y-%m-%d %H:%M")}
+        **Asset:** CHW & LTHW networks – built by Gesner Deslandes
+        **BS EN 15232 BMS efficiency class:** B (estimated)
+        **ISO 50001 energy performance:** baseline established
+        **Heat‑network readiness score:** {readiness}%
+        **Current COP:** {cop}
+        **Recommended decarbonisation pathway:** District heating connection
+        """
+        st.download_button("Download Report (.txt)", report, file_name=f"compliance_report_{datetime.now().strftime('%Y%m%d')}.txt")
+    st.info("Full BIM‑ready asset register and MEP infrastructure records available upon request.")
 
 # Footer
 st.markdown("---")
