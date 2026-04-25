@@ -13,7 +13,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ========== CUSTOM CSS ==========
+# ========== CUSTOM CSS FOR MODERN LOOK ==========
 st.markdown("""
 <style>
     /* Main app background after login */
@@ -21,15 +21,15 @@ st.markdown("""
         background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
     }
     
-    /* Make input placeholders black for readability */
+    /* Input placeholders black */
     input::placeholder {
         color: black !important;
         opacity: 0.9 !important;
     }
     
-    /* Sidebar styling */
+    /* Sidebar dark gradient */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
         color: white;
     }
     [data-testid="stSidebar"] * {
@@ -49,7 +49,7 @@ st.markdown("""
         transform: translateY(-5px);
     }
     
-    /* Tabs styling */
+    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {
         gap: 2rem;
         background-color: rgba(255,255,255,0.5);
@@ -63,7 +63,7 @@ st.markdown("""
         background-color: transparent;
     }
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
         color: white !important;
     }
     
@@ -77,67 +77,113 @@ st.markdown("""
         font-size: 0.8rem;
     }
     
-    /* Override Streamlit's default text color on login page only – keep black text */
+    /* Login input fields */
     .stTextInput > div > div > input {
         color: black !important;
-        background-color: rgba(255,255,255,0.9) !important;
+        background-color: rgba(255,255,255,0.95) !important;
+        border-radius: 40px !important;
+        padding: 12px 20px !important;
+        font-size: 1rem !important;
+        border: none !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    /* Login button */
+    .stButton > button {
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 0.6rem 1rem;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+    .stButton > button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
 </style>
 """, unsafe_allow_html=True)
 
-# ========== LOGIN PAGE (COLORFUL BACKGROUND, BLACK TEXT) ==========
+# ========== LOGIN PAGE – ATTRACTIVE ANIMATED GRADIENT ==========
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    # Full‑screen colorful gradient background (purple to blue)
+    # Full‑screen animated gradient background (blue → purple → pink)
     st.markdown("""
-    <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        z-index: -1;
-    "></div>
+    <style>
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(270deg, #1e3c72, #2a5298, #7c3aed, #ec4899);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+            z-index: -2;
+        }
+        .glow-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 40px;
+            padding: 2rem;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.2);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .glow-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 55px rgba(0,0,0,0.4), 0 0 0 3px rgba(255,255,255,0.4);
+        }
+        .floating-particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+    <div class="animated-bg"></div>
+    <!-- Simple floating particles effect via CSS only (small dots) -->
     """, unsafe_allow_html=True)
     
     # Centered login card
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([1, 1.8, 1])
     with col2:
         st.markdown("""
-        <div style="
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(12px);
-            border-radius: 30px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-        ">
-            <div style="font-size: 4rem;">🔥</div>
-            <h1 style="color: black; margin: 0.5rem 0; text-shadow: none; font-weight: 700;">Thermal Networks Optimisation Suite</h1>
-            <h3 style="color: black; margin: 0; font-weight: 600;">built by <strong>Gesner Deslandes</strong></h3>
-            <p style="color: black; margin-top: 1rem; font-size: 1rem;">Demo – any credentials work</p>
+        <div class="glow-card">
+            <div style="font-size: 5rem; margin-bottom: 0.5rem;">🔥⚙️</div>
+            <h1 style="color: white; margin: 0.2rem 0; font-size: 2.2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Thermal Networks<br>Optimisation Suite</h1>
+            <p style="color: #f0f0f0; font-size: 1.2rem; margin: 0.2rem 0;">built by <strong style="color: #ffdd99;">Gesner Deslandes</strong></p>
+            <p style="color: #e0e0e0; margin-top: 0.5rem; font-size: 0.9rem;">🔐 Demo access – any username / any password</p>
         </div>
         """, unsafe_allow_html=True)
         
-        # Streamlit login widgets
-        username = st.text_input("Username", placeholder="Any username", label_visibility="collapsed")
-        password = st.text_input("Password", type="password", placeholder="Any password", label_visibility="collapsed")
-        if st.button("🔓 Login", use_container_width=True):
+        # Streamlit login widgets (they will inherit the styling)
+        username = st.text_input("", placeholder="👤 Any username", label_visibility="collapsed")
+        password = st.text_input("", type="password", placeholder="🔒 Any password", label_visibility="collapsed")
+        if st.button("🚀 Enter Dashboard", use_container_width=True):
             if username and password:
                 st.session_state.authenticated = True
                 st.rerun()
             else:
                 st.error("Please enter a username and password (any values work)")
+        st.markdown("<p style='text-align: center; color: #ddd; font-size: 0.7rem; margin-top: 1rem;'>© 2026 – Advanced Thermal Optimisation</p>", unsafe_allow_html=True)
     st.stop()
 
 # ========== MAIN DASHBOARD (AFTER LOGIN) ==========
 st.markdown("""
 <div style="text-align: center; padding: 1rem 0;">
-    <h1 style="background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; background-clip: text; color: transparent;">🔥 Thermal Networks Optimisation Suite</h1>
+    <h1 style="background: linear-gradient(135deg, #2563eb, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent;">🔥 Thermal Networks Optimisation Suite</h1>
     <h3 style="color: #334155;">built by <strong>Gesner Deslandes</strong></h3>
 </div>
 """, unsafe_allow_html=True)
@@ -237,7 +283,6 @@ with tab2:
     fig_load = px.area(x=df["timestamp"], y=cooling_load, title="Instantaneous Cooling Load (kW)", labels={"x": "Time", "y": "kW"})
     fig_load.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig_load, use_container_width=True)
-    
     st.info("💡 **Insight:** COP above 4.0 indicates efficient operation. Below 3.8 suggests maintenance or load optimisation needed.")
 
 with tab3:
@@ -250,7 +295,6 @@ with tab3:
     fig_decarb = px.line(df_decarb, x=years, y=df_decarb.columns, title="Emissions Reduction Pathways (tCO₂e)", markers=True)
     fig_decarb.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig_decarb, use_container_width=True)
-    
     st.success("**2030 target:** 625 tCO₂e – District heating connection reaches 500 tCO₂e by 2030.")
 
 with tab4:
